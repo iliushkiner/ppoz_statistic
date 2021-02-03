@@ -2,12 +2,12 @@
 $(document).ready(function(){
   //var htm = $(".statement-number").html();
   //let podrazc = localStorage['podrazdelenie'];
-  /*let podrazc = 'пусто';
+  /*let podrazc = 'РїСѓСЃС‚Рѕ';
   podrazc = chrome.storage.local.get(['podrazdelenie'], function(result){
     console.log(result.podrazdelenie);
   });*/
 
-  //$("#statistic").html("Подразделение: ".concat(podrazc));
+  //$("#statistic").html("РџРѕРґСЂР°Р·РґРµР»РµРЅРёРµ: ".concat(podrazc));
   /*let request = {
     region: window.localStorage.plg_def_region,
     podrazdelenie: window.localStorage.plg_def_podraz.split(';')
@@ -33,7 +33,7 @@ $(document).ready(function(){
   });     
 
   $('#countdate').val(window.localStorage.plg_countdate);
-  $("#now").html("<span style='color:red;'>сведения на</span>: <strong style='font-size: 11px'>"+Date()+"</strong>");
+  $("#now").html("<span style='color:red;'>СЃРІРµРґРµРЅРёСЏ РЅР°</span>: <strong style='font-size: 11px'>"+Date()+"</strong>");
   let date_to = new Date();            
   let str_date_to = date_to.getFullYear() + '-' + ((date_to.getMonth()+1)<10 ? '0' : '') + (date_to.getMonth()+1) + '-' + ((date_to.getDate())<10 ? '0' : '') + date_to.getDate();
   $("#filtrdate").val(str_date_to); 
@@ -42,7 +42,7 @@ $(document).ready(function(){
 var curentreg = 0;
 var curentpodr = 0;
 
-/*function getAjaxData(url, json){
+function getAjaxDataUnasync(url, json){
   var result = "";
   $.ajax({
     url: url,
@@ -57,7 +57,7 @@ var curentpodr = 0;
     } 
   });
   return result
-} */
+} 
 function getAjaxData(url, selctor, json){
   $.ajax({
     url: url,
@@ -69,37 +69,54 @@ function getAjaxData(url, selctor, json){
     success: function(data) {
       //console.log(data);
       //result = data;
-      $(selctor).html(data.requests.length);
+      let count = ($(selctor).html() != '<img src="loading.gif" alt="loading" class="loading">' ? parseInt($(selctor+" .count").html()) : 0);      
+      if (data.requests.length>0){
+        $(selctor).html("<span class='count'>" + (count + data.requests.length) + "</count><img src='loading.gif' alt='loading' class='loading'>");
+        json.pageNumber++;
+        getAjaxData(url, selctor, json)
+      } else {
+        $(selctor).html("<span class='count'>" + (count) + "</count>");
+      }
     } 
   });
+}
+function getCountAppealNumber(url, selctor, json){
+    let count = 0;
+    let data = null;
+    do{         
+        data = getAjaxDataUnasync(url, json);
+        count = count + data.requests.length;
+        json.pageNumber++;
+    } while (data.requests.length>0);
+    $(selctor).html(count);
 }
 
 function load_inf_statistic(request){
       $("#statistic").html("");
-      /*console.log("Получено:");  
+      /*console.log("РџРѕР»СѓС‡РµРЅРѕ:");  
       console.log(request);*/
       var htm = "";
-      $("#statistic").html((typeof(request.podrazdelenie) == "undefined" || request.podrazdelenie == null || request.podrazdelenie == "") ? "<div style='color: red; text-align: center;'><br>Необходимо выбрать не мене одного подразделения или внести код ЕСТО в параметрах рпсширения.</div>" : "<div style='text-align: center;'><img src='loading.gif' alt='loading' class='loading'></div>");
+      $("#statistic").html((typeof(request.podrazdelenie) == "undefined" || request.podrazdelenie == null || request.podrazdelenie == "") ? "<div style='color: red; text-align: center;'><br>РќРµРѕР±С…РѕРґРёРјРѕ РІС‹Р±СЂР°С‚СЊ РЅРµ РјРµРЅРµ РѕРґРЅРѕРіРѕ РїРѕРґСЂР°Р·РґРµР»РµРЅРёСЏ РёР»Рё РІРЅРµСЃС‚Рё РєРѕРґ Р•РЎРўРћ РІ РїР°СЂР°РјРµС‚СЂР°С… СЂРїСЃС€РёСЂРµРЅРёСЏ.</div>" : "<div style='text-align: center;'><img src='loading.gif' alt='loading' class='loading'></div>");
       $.each(request.podrazdelenie, function(index, value){
       /*console.log(value);*/
       var podrazdc = value;         
          
       //htm = "<h5>"+Date()+"</h5>";
       $("#statistic").html(htm);
-     /** вывод статистики по регам отдела. 
+     /** РІС‹РІРѕРґ СЃС‚Р°С‚РёСЃС‚РёРєРё РїРѕ СЂРµРіР°Рј РѕС‚РґРµР»Р°. 
      * http://ppoz-service-bal-01.prod.egrn:9001/manager/assign/users/byEstoOrRegionAndRole?region=12&esto=12.062&withBlocked=true
      **/
       var url = "http://ppoz-service-bal-01.prod.egrn:9001/manager/assign/users/byEstoOrRegionAndRole?region="+request.region+"&esto="+podrazdc+"&withBlocked=true";
       console.log(url);
       
-      //$("#statistic").html("<div><span>Регион: </span>"+request.region+"</div><div><span>Подразделение: </span>"+podrazdc+"</div>");
+      //$("#statistic").html("<div><span>Р РµРіРёРѕРЅ: </span>"+request.region+"</div><div><span>РџРѕРґСЂР°Р·РґРµР»РµРЅРёРµ: </span>"+podrazdc+"</div>");
       $.ajax({
         url: url,
         /*dataType: "json",*/
         method: "GET",
         success: function(data) {
           console.log(data);
-          htm = "<div><span><b>Регион:</b> "+request.region+"</span>   <span><b>Подразделение:</b> "+podrazdc+"</span></div>";          
+          htm = "<div><span><b>Р РµРіРёРѕРЅ:</b> "+request.region+"</span>   <span><b>РџРѕРґСЂР°Р·РґРµР»РµРЅРёРµ:</b> "+podrazdc+"</span></div>";          
           htm += "<div class='stat'>";
           let table = "";
           let prev_assignDate = 0;
@@ -138,8 +155,8 @@ function load_inf_statistic(request){
             table += "<tr id='" + data[i].login + "'><td width='300'>" + reg + "</td>";
             
             /**
-             *В работе на текущий момент
-             *формат "2020-12-09"
+             *Р’ СЂР°Р±РѕС‚Рµ РЅР° С‚РµРєСѓС‰РёР№ РјРѕРјРµРЅС‚
+             *С„РѕСЂРјР°С‚ "2020-12-09"
              **/
             /*let date_to = new Date();            
             let str_date_to = date_to.getFullYear() + '-' + ((date_to.getMonth()+1)<10 ? '0' : '') + (date_to.getMonth()+1) + '-' + date_to.getDate();*/             
@@ -147,10 +164,11 @@ function load_inf_statistic(request){
                      //{"pageNumber":0,"pageSize":1000,"statuses":["reg_validations"],"subjectRF":["12"],"executorDepartments":["12.146"],"executors":["ibkolesnikova"],"byActiveExecutor":true}
             let json = {pageNumber:0,pageSize:1000,statuses:[(regrole==2 ? "find_object_to_extractions" : (regrole==1 ? "reg_validations" : "initial_examinations"))],subjectRF:[request.region],executorDepartments:[podrazdc],executors:[data[i].login],byActiveExecutor:true};
             getAjaxData(requrl,"#"+data[i].login+" .in_work", json);
+            //getCountAppealNumber(requrl,"#"+data[i].login+" .in_work", json);
             table += "<td class='in_work'><img src='loading.gif' alt='loading' class='loading'></td>";
             
             /**
-             *Дата исполнения по регламенту 
+             *Р”Р°С‚Р° РёСЃРїРѕР»РЅРµРЅРёСЏ РїРѕ СЂРµРіР»Р°РјРµРЅС‚Сѓ 
              **/
             if (window.localStorage.plg_inwork_enable == "true"){
               for (var j=0; j<=parseInt(window.localStorage.plg_countdate); j++){
@@ -165,7 +183,7 @@ function load_inf_statistic(request){
             }
 
             /**
-             *Завершено за выбранную дату
+             *Р—Р°РІРµСЂС€РµРЅРѕ Р·Р° РІС‹Р±СЂР°РЅРЅСѓСЋ РґР°С‚Сѓ
              **/
             if (window.localStorage.plg_closed_enable == "true"){
               for (var j=0; j<=parseInt(window.localStorage.plg_countdate); j++){
@@ -182,7 +200,7 @@ function load_inf_statistic(request){
             }
             
             /**
-             *Завершено за предыдущую выбранной дате
+             *Р—Р°РІРµСЂС€РµРЅРѕ Р·Р° РїСЂРµРґС‹РґСѓС‰СѓСЋ РІС‹Р±СЂР°РЅРЅРѕР№ РґР°С‚Рµ
              **/                                                
             /*     //{"pageNumber":0,"pageSize":10,"subjectRF":["12"],"executorDepartments":["12.060"],"executors":["ialoskutov"],"completionDate":{"dateFrom":"2020-12-09","dateTo":"2020-12-09"}}
             json = {pageNumber:0,pageSize:1000,subjectRF:[request.region],executorDepartments:[podrazdc],executors:[data[i].login],completionDate:{dateFrom:str_date_yesterday,dateTo:str_date_yesterday}};
@@ -190,7 +208,7 @@ function load_inf_statistic(request){
             table += "<td class='closed_tomorrow'><img src='loading.gif' alt='loading' class='loading'></td>";*/
                         
             /**
-             *В просрочках на выбранную дату
+             *Р’ РїСЂРѕСЃСЂРѕС‡РєР°С… РЅР° РІС‹Р±СЂР°РЅРЅСѓСЋ РґР°С‚Сѓ
              **/
             if (window.localStorage.plg_expiried_enable == "true"){                                    
               for (var j=0; j<=parseInt(window.localStorage.plg_countdate); j++){
@@ -210,7 +228,7 @@ function load_inf_statistic(request){
            }                      
           }
           if (table != ""){
-            htm += "<table class='table table-striped' style='font-size: 12px;'><theader><tr><th>Регистратор</th><th>В работе на текущий момент</th>";
+            htm += "<table class='table table-striped' style='font-size: 12px;'><theader><tr><th>Р РµРіРёСЃС‚СЂР°С‚РѕСЂ</th><th>Р’ СЂР°Р±РѕС‚Рµ РЅР° С‚РµРєСѓС‰РёР№ РјРѕРјРµРЅС‚</th>";
             
             if (window.localStorage.plg_inwork_enable == "true"){
               for (var j=0; j<=parseInt(window.localStorage.plg_countdate); j++){
@@ -219,7 +237,7 @@ function load_inf_statistic(request){
                 req_date = new Date(req_date);
                 //console.log(req_date);
                 str_req_date = ""+req_date.getFullYear() + '-' + ((req_date.getMonth()+1)<10 ? '0' : '') + (req_date.getMonth()+1) + '-' + ((req_date.getDate())<10 ? '0' : '') + req_date.getDate();
-                htm +="<th"+((req_date.getUTCDay()==5 || req_date.getUTCDay()==6) ? " style='color:red;'" : "")+">Дата исполнения по регл-у "+str_req_date+"</th>";
+                htm +="<th"+((req_date.getUTCDay()==5 || req_date.getUTCDay()==6) ? " style='color:red;'" : "")+">Р”Р°С‚Р° РёСЃРїРѕР»РЅРµРЅРёСЏ РїРѕ СЂРµРіР»-Сѓ "+str_req_date+"</th>";
               }
             }
             
@@ -230,7 +248,7 @@ function load_inf_statistic(request){
                 req_date = new Date(req_date);
                 //console.log(req_date);
                 str_req_date = ""+req_date.getFullYear() + '-' + ((req_date.getMonth()+1)<10 ? '0' : '') + (req_date.getMonth()+1) + '-' + ((req_date.getDate())<10 ? '0' : '') + req_date.getDate();
-                htm +="<th"+((req_date.getUTCDay()==5 || req_date.getUTCDay()==6) ? " style='color:red;'" : "")+">Завершено "+str_req_date+"</th>";
+                htm +="<th"+((req_date.getUTCDay()==5 || req_date.getUTCDay()==6) ? " style='color:red;'" : "")+">Р—Р°РІРµСЂС€РµРЅРѕ "+str_req_date+"</th>";
               }
             }
             
@@ -241,14 +259,14 @@ function load_inf_statistic(request){
                 req_date = new Date(req_date);
                 //console.log(req_date);
                 str_req_date = ""+req_date.getFullYear() + '-' + ((req_date.getMonth()+1)<10 ? '0' : '') + (req_date.getMonth()+1) + '-' + ((req_date.getDate())<10 ? '0' : '') + req_date.getDate();            
-                htm +="<th"+((req_date.getUTCDay()==5 || req_date.getUTCDay()==6) ? " style='color:red;'" : "")+">Просроченные на "+str_req_date+"</th>";
+                htm +="<th"+((req_date.getUTCDay()==5 || req_date.getUTCDay()==6) ? " style='color:red;'" : "")+">РџСЂРѕСЃСЂРѕС‡РµРЅРЅС‹Рµ РЅР° "+str_req_date+"</th>";
               }
             }        
             htm +="</tr><theader><tbody>";
             htm += table;
             htm += "</tbody></table>";
           } else {
-            htm += "<div style='color: red; text-align: center;'><br>В отделе не числятся указанные сотрудники в параметрах расширения. Снимите галочку 'Выводить только cписок интересующих регов' или измените список.</div><br>";
+            htm += "<div style='color: red; text-align: center;'><br>Р’ РѕС‚РґРµР»Рµ РЅРµ С‡РёСЃР»СЏС‚СЃСЏ СѓРєР°Р·Р°РЅРЅС‹Рµ СЃРѕС‚СЂСѓРґРЅРёРєРё РІ РїР°СЂР°РјРµС‚СЂР°С… СЂР°СЃС€РёСЂРµРЅРёСЏ. РЎРЅРёРјРёС‚Рµ РіР°Р»РѕС‡РєСѓ 'Р’С‹РІРѕРґРёС‚СЊ С‚РѕР»СЊРєРѕ cРїРёСЃРѕРє РёРЅС‚РµСЂРµСЃСѓСЋС‰РёС… СЂРµРіРѕРІ' РёР»Рё РёР·РјРµРЅРёС‚Рµ СЃРїРёСЃРѕРє.</div><br>";
           }
           htm += "</div>";
           htm = $("#statistic").html() + htm;          
