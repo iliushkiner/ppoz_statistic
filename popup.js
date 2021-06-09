@@ -307,8 +307,9 @@ function load_inf_statistic(request) {
                     htm += "<div style='color: red; text-align: center;'><br>В отделе не числятся указанные сотрудники в параметрах расширения. Снимите галочку 'Выводить только cписок интересующих регов' или измените список.</div><br>";
                 }
                 htm += "</div>";
-                htm = $("#statistic").html() + htm;
-                $("#statistic").html(htm);
+                let statistic = $("#statistic");
+                htm = statistic.html() + htm;
+                statistic.html(htm);
                 //htm += "</div>";
             }
         });
