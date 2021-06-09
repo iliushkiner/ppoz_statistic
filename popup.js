@@ -101,14 +101,14 @@ function load_inf_statistic(request) {
     statistic.html((typeof (request.podrazdelenie) == "undefined" || request.podrazdelenie == null || request.podrazdelenie === "") ? "<div style='color: red; text-align: center;'><br>Необходимо выбрать не мене одного подразделения или внести код ЕСТО в параметрах рпсширения.</div>" : "<div style='text-align: center;'><img src='loading.gif' alt='loading' class='loading'></div>");
     $.each(request.podrazdelenie, function (index, value) {
         /*console.log(value);*/
-        var podrazdc = value;
+        let podrazdc = value;
 
         //htm = "<h5>"+Date()+"</h5>";
         statistic.html(htm);
         /** вывод статистики по регам отдела.
          * http://ppoz-service-bal-01.prod.egrn:9001/manager/assign/users/byEstoOrRegionAndRole?region=12&esto=12.062&withBlocked=true
          **/
-        var url = "http://ppoz-service-bal-01.prod.egrn:9001/manager/assign/users/byEstoOrRegionAndRole?region=" + request.region + "&esto=" + podrazdc + "&withBlocked=true";
+        let url = "http://ppoz-service-bal-01.prod.egrn:9001/manager/assign/users/byEstoOrRegionAndRole?region=" + request.region + "&esto=" + podrazdc + "&withBlocked=true";
         console.log(url);
 
         //$("#statistic").html("<div><span>Регион: </span>"+request.region+"</div><div><span>Подразделение: </span>"+podrazdc+"</div>");
@@ -280,23 +280,23 @@ function load_inf_statistic(request) {
                     }
 
                     if (window.localStorage.plg_closed_enable === "true") {
-                        for (var j = 0; j <= parseInt(window.localStorage.plg_countdate); j++) {
+                        for (let j = 0; j <= parseInt(window.localStorage.plg_countdate); j++) {
                             let req_date = new Date(select_date);
                             req_date = req_date.setDate(req_date.getDate() - j);
                             req_date = new Date(req_date);
                             //console.log(req_date);
-                            str_req_date = "" + req_date.getFullYear() + '-' + ((req_date.getMonth() + 1) < 10 ? '0' : '') + (req_date.getMonth() + 1) + '-' + ((req_date.getDate()) < 10 ? '0' : '') + req_date.getDate();
+                            let str_req_date = "" + req_date.getFullYear() + '-' + ((req_date.getMonth() + 1) < 10 ? '0' : '') + (req_date.getMonth() + 1) + '-' + ((req_date.getDate()) < 10 ? '0' : '') + req_date.getDate();
                             htm += "<th" + ((req_date.getUTCDay() === 5 || req_date.getUTCDay() === 6) ? " style='color:red;'" : "") + ">Завершено " + str_req_date + "</th>";
                         }
                     }
 
                     if (window.localStorage.plg_expiried_enable === "true") {
-                        for (var j = 0; j <= parseInt(window.localStorage.plg_countdate); j++) {
+                        for (let j = 0; j <= parseInt(window.localStorage.plg_countdate); j++) {
                             let req_date = new Date(select_date);
                             req_date = req_date.setDate(req_date.getDate() - j - 1);
                             req_date = new Date(req_date);
                             //console.log(req_date);
-                            str_req_date = "" + req_date.getFullYear() + '-' + ((req_date.getMonth() + 1) < 10 ? '0' : '') + (req_date.getMonth() + 1) + '-' + ((req_date.getDate()) < 10 ? '0' : '') + req_date.getDate();
+                            let str_req_date = "" + req_date.getFullYear() + '-' + ((req_date.getMonth() + 1) < 10 ? '0' : '') + (req_date.getMonth() + 1) + '-' + ((req_date.getDate()) < 10 ? '0' : '') + req_date.getDate();
                             htm += "<th" + ((req_date.getUTCDay() === 5 || req_date.getUTCDay() === 6) ? " style='color:red;'" : "") + ">Просроченные на " + str_req_date + "</th>";
                         }
                     }
