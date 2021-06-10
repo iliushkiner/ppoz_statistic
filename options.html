@@ -1,6 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-  <head>
+<head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="generator" content="PSPad editor, www.pspad.com">
     <title>Статистика регдействий отдела</title>
@@ -9,35 +9,52 @@
     <script src="options.js" type="text/javascript"></script>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
-    <link href="options.css" rrel="stylesheet" rel="stylesheet" type="text/css"/>
-  </head>
-  <body>
-     <div class="container">
-      <h3>Настройка</h3>
-      <div id="options">
-        <input id="plg_on_hover_history_enable" type="checkbox" checked="checked" name="plg_on_hover_history_enable">Показать историю назначений обращения при наведение<br>
+    <link href="options.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="container">
+    <h3>Настройка</h3>
+    <div id="options">
+        <input id="plg_on_hover_history_enable" type="checkbox" checked="checked" name="plg_on_hover_history_enable">Показать
+        историю назначений обращения при наведение<br>
         <fieldset>
-          <legend style='font-size: 11px'>Значения по умолчанию</legend>
-          <div class="row">
-            <div class="col-sm-4">
-              <label style='font-size: 11px'>Регион</label><br>
-              <input id="plg_def_region" type="text" size="40"><br>
-              <label style='font-size: 11px'>Список кодов ЕСТО через запятую</label><br>
-              <input id="plg_def_podraz" type="text" size="40"><br>
+            <legend style='font-size: 11px'>Значения по умолчанию</legend>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="plg_def_region" style='font-size: 11px'>Регион</label><br>
+                    <input id="plg_def_region" type="text" size="40"><br>
+                    <label for="plg_def_podraz" style='font-size: 11px'>Список кодов ЕСТО через запятую</label><br>
+                    <input id="plg_def_podraz" type="text" size="40"><br>
+                </div>
+                <div class="col-sm-4">
+                    <label for="plg_def_regs" style='font-size: 11px'><input id="plg_regs_enable" type="checkbox" name="plg_regs_enable"
+                                                          style="margin: 0;">Выводить только cписок интересующих
+                        регов</label><br>
+                    <textarea id="plg_def_regs" cols="40" rows="3" placeholder="Список регов через запятую"
+                              style="height:72px;"></textarea>
+                </div>
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <label style='font-size: 11px'>Выводить граф в раскладе по выбранному количеству
+                                дней</label><br>
+                            <input id="plg_expiried_enable" type="checkbox" checked="checked"
+                                   name="plg_executiondate_enable">Просроченные по срокам<br>
+                            <input id="plg_closed_enable" type="checkbox" checked="checked" name="plg_closed_enable">Завешено
+                            по датам<br>
+                            <input id="plg_inwork_enable" type="checkbox" checked="checked" name="plg_on_inwork_enable">В
+                            работе по срокам<br>
+                        </div>
+                        <div class="col-sm-5">
+                            <label for="plg_def_status" style='font-size: 11px'>Список статусов по умолчанию</label><br>
+                            <textarea id="plg_def_status" rows="3" cols="15"
+                                      placeholder="Список статусов через запятую"></textarea><br>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-4">
-              <label style='font-size: 11px'><input id="plg_regs_enable" type="checkbox" name="plg_regs_enable" style="margin: 0;">Выводить только cписок интересующих регов</label><br>
-              <textarea id="plg_def_regs" cols="40" rows="3" placeholder="Список регов через запятую" style="height:72px;"></textarea>
-            </div>
-            <div class="col-sm-4">
-              <label style='font-size: 11px'>Выводить граф в раскладе по выбранному количеству дней</label><br>
-              <input id="plg_expiried_enable" type="checkbox" checked="checked" name="plg_executiondate_enable">Просроченные по срокам<br>
-              <input id="plg_closed_enable" type="checkbox" checked="checked" name="plg_closed_enable">Завешено по датам<br>
-              <input id="plg_inwork_enable" type="checkbox" checked="checked" name="plg_on_inwork_enable">В работе по срокам<br>
-            </div>
-          </div>
         </fieldset>
-      </div>
     </div>
-  </body>
+</div>
+</body>
 </html>

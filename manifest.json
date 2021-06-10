@@ -1,6 +1,6 @@
 {
   "name": "Regs Statistic History",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "manifest_version": 2,
   "description": "Расширение позволяющее просмотреть при наведение на обращение истории назначений. При нажатие на иконку расширения выводится статистика регдействий сотрудников отдела. Для того чтобы статистика загрузилась необходимо в фильтре выбрать отдел.",
   "options_page": "options.html",
@@ -25,12 +25,10 @@
   },
   
   "content_scripts": [{
-    /*"matches": ["<all_urls>"],*/
     "matches": ["http://ppoz-service-bal-01.prod.egrn:9001/*"],
     "js": [
         "jquery-3.5.1.min.js",
         "bootstrap/js/vendor/bootstrap.min.js",
-        /*"bootstrap/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js",*/
         "content.js"
     ],
     

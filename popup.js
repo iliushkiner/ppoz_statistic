@@ -1,4 +1,5 @@
 // JavaScript Document
+let ready = false;
 $(document).ready(function () {
     //var htm = $(".statement-number").html();
     //let podrazc = localStorage['podrazdelenie'];
@@ -13,6 +14,7 @@ $(document).ready(function () {
       podrazdelenie: window.localStorage.plg_def_podraz.split(';')
     };
     load_inf_statistic(request);*/
+    ready = true;
     let count_date = $('#countdate');
     count_date.on('change past kayup select', function () {
         let plg_count_date = count_date.val();
@@ -40,7 +42,7 @@ $(document).ready(function () {
     $("#filtrdate").val(str_date_to);
 });
 
-let current_podr = 0;
+let current_request = 0;
 
 /*function getAjaxDataUnAsync(url, json){
   var result = "";
@@ -119,7 +121,9 @@ function load_inf_statistic(request) {
             success: function (data) {
                 console.log(data);
                 htm = "<div><span><b>Регион:</b> " + request.region + "</span>   <span><b>Подразделение:</b> " + podrazdc + "</span></div>";
+                htm += "<div><b>Статусы:</b> " + request.statuses.join(',') + "</div>";
                 htm += "<div class='stat'>";
+
                 let table = "";
                 let str_select_date = $("#filtrdate").val();
                 console.log(str_select_date);
@@ -169,7 +173,8 @@ function load_inf_statistic(request) {
                             let json = {
                                 pageNumber: 0,
                                 pageSize: 1000,
-                                statuses: [(regrole === 2 ? "find_object_to_extractions" : (regrole === 1 ? "reg_validations" : "initial_examinations"))],
+                                //statuses: [(regrole === 2 ? "find_object_to_extractions" : (regrole === 1 ? "reg_validations" : "initial_examinations"))],
+                                statuses: request.statuses,
                                 subjectRF: [request.region],
                                 executorDepartments: [podrazdc],
                                 executors: [data[i].login],
@@ -191,7 +196,8 @@ function load_inf_statistic(request) {
                                     json = {
                                         pageNumber: 0,
                                         pageSize: 1000,
-                                        statuses: [(regrole === 2 ? "find_object_to_extractions" : (regrole === 1 ? "reg_validations" : "initial_examinations"))],
+                                        //statuses: [(regrole === 2 ? "find_object_to_extractions" : (regrole === 1 ? "reg_validations" : "initial_examinations"))],
+                                        statuses: request.statuses,
                                         executionDate: {dateFrom: req_date, dateTo: req_date},
                                         subjectRF: [request.region],
                                         executorDepartments: [podrazdc],
@@ -323,15 +329,15 @@ chrome.runtime.onMessage.addListener(
         //sendResponse({farewell: "goodbye"});
         /*if (curentpodr!=request.podrazdelenie){
           curentpodr = request.podrazdelenie;*/
-        if (current_podr !== JSON.stringify(request)) {
+        if (current_request !== JSON.stringify(request) && ready) {
             //console.log(request);
-            current_podr = JSON.stringify(request);
-            if (request.podrazdelenie.length === 0) {
-                request = {
-                    region: (typeof (window.localStorage.plg_def_region) != "undefined" && window.localStorage.plg_def_region != null) ? window.localStorage.plg_def_region : "",
-                    podrazdelenie: (typeof (window.localStorage.plg_def_podraz) != "undefined" && window.localStorage.plg_def_podraz != null) ? (window.localStorage.plg_def_podraz).split(',') : ""
-                };
-            }
+            current_request = JSON.stringify(request);
+            request = {
+                region: (typeof (request.region) != "undefined") ? request.region : (typeof (window.localStorage.plg_def_region) != "undefined" && window.localStorage.plg_def_region != null) ? window.localStorage.plg_def_region : "",
+                podrazdelenie: (request.podrazdelenie.length !== 0) ? request.podrazdelenie : (typeof (window.localStorage.plg_def_podraz) != "undefined" && window.localStorage.plg_def_podraz != null) ? (window.localStorage.plg_def_podraz).split(',') : "",
+                statuses: (request.statuses.length !== 0) ? request.statuses : (typeof (window.localStorage.plg_def_status) != "undefined" && window.localStorage.plg_def_status != null) ? (window.localStorage.plg_def_status).split(',') : []
+            };
+
             window.localStorage.curent_request = JSON.stringify(request);
             chrome.storage.local.set({curent_request: JSON.stringify(request)}, function () {
                 console.log(JSON.stringify(request));
