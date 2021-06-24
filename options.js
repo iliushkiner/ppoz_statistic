@@ -16,6 +16,7 @@ $(document).ready(function(){
   $('#plg_expiried_enable')[0].checked = (window.localStorage.plg_expiried_enable === "true");
   $('#plg_closed_enable')[0].checked = (window.localStorage.plg_closed_enable === "true");
   $('#plg_inwork_enable')[0].checked = (window.localStorage.plg_inwork_enable === "true");
+  $('#plg_regs_statistic_filter_enable')[0].checked = (window.localStorage.plg_regs_statistic_filter_enable === "true");
   $('#plg_def_status').html(window.localStorage.plg_def_status);
 
   let body = $('body');
@@ -59,6 +60,14 @@ $(document).ready(function(){
     }); 
   });
 
+  body.on('click', '#plg_regs_statistic_filter_enable', function(){
+    let plg_enable = $('#plg_regs_statistic_filter_enable')[0].checked;
+    window.localStorage.plg_regs_statistic_filter_enable = plg_enable;
+    chrome.storage.local.set({plg_regs_statistic_filter_enable: plg_enable}, function(){
+      console.log(plg_enable);
+    });
+  });
+
   body.on('change past kayup select', '#plg_def_region', function(){
     let plg_def_region = $('#plg_def_region').val();  
     window.localStorage.plg_def_region = plg_def_region;
@@ -90,5 +99,98 @@ $(document).ready(function(){
     chrome.storage.local.set({plg_def_podraz: plg_def_podraz}, function(){
             console.log(plg_def_podraz);
     }); 
-  });  
+  });
+
+  let htm = '';
+  let filter_item = 0;
+  if (typeof(window.localStorage.plg_regs_statistic_filter_list) != "undefined" && window.localStorage.plg_regs_statistic_filter_list != null){
+    let plg_regs_statistic_filter_list = JSON.parse(window.localStorage.plg_regs_statistic_filter_list);
+    $.each(plg_regs_statistic_filter_list, function(index,value){
+      htm += '<div class="row" id="plg_def_filter_'+index+'">'+
+          '<div class="col-sm-1">'+
+          '<label style="font-size: 11px">Включить</label><br>'+
+          '<input class="plg_def_filter filter_enable" data-index="'+index+'" type="checkbox" ' + (value.enable ? 'checked="checked"' : '') + ' name="filter_enable">'+
+          '</div>'+
+          '<div class="col-sm-3">'+
+          '<label style="font-size: 11px">Наименование</label><br>'+
+          '<textarea class="plg_def_filter filter_name" data-index="'+index+'" rows="5" placeholder=\'Введите наименование фильтра\' style="height:100px; width:100%">'+
+          value.name+
+          '</textarea>'+
+          '</div>'+
+          '<div class="col-sm-8">'+
+          '<label style="font-size: 11px">JSON фильтр</label><br>'+
+          '<textarea class="plg_def_filter filter_json" data-index="'+index+'" rows="5" placeholder=\'[{"array":{"statements":{"like":{"requestedDocument":["Выписка из Единого государственного реестра недвижимости о правах отдельного лица на имевшиеся (имеющиеся) у него объекты недвижимости."]}}}}]\' style="height:100px; width:100%">'+
+          JSON.stringify(value.json_filter)+
+          '</textarea>'+
+          '</div>'+
+          '</div>';
+      filter_item = index+1;
+    });
+  }
+
+  htm += '<div class="row" id="plg_def_filter_'+filter_item+'">'+
+      '<div class="col-sm-1">'+
+      '<label style="font-size: 11px">Включить</label><br>'+
+      '<input class="plg_def_filter filter_enable" data-index="' + filter_item + '" type="checkbox" name="filter_enable">'+
+      '</div>'+
+      '<div class="col-sm-3">'+
+      '<label style="font-size: 11px">Наименование</label><br>'+
+      '<textarea class="plg_def_filter filter_name" data-index="'+filter_item+'" rows="5" placeholder=\'Введите наименование фильтра\' style="height:100px; width:100%"></textarea>'+
+      '</div>'+
+      '<div class="col-sm-8">'+
+      '<label style="font-size: 11px">JSON фильтр</label><br>'+
+      '<textarea class="plg_def_filter filter_json" data-index="'+filter_item+'" rows="5" placeholder=\'[{"array":{"statements":{"like":{"requestedDocument":["Выписка из Единого государственного реестра недвижимости о правах отдельного лица на имевшиеся (имеющиеся) у него объекты недвижимости."]}}}}]\' style="height:100px; width:100%"></textarea>'+
+      '</div>'+
+      '</div>';
+  $('#plg_regs_statistic_filter_list').html(htm);
+
+  $('body').on('change past kayup select', '.plg_def_filter', function(){
+    let plg_regs_statistic_filter_list = (typeof(window.localStorage.plg_regs_statistic_filter_list) != "undefined" && window.localStorage.plg_regs_statistic_filter_list != null) ? JSON.parse(window.localStorage.plg_regs_statistic_filter_list) : [];
+
+    let index = $(this).data('index');
+    if ($('.plg_def_filter.filter_name[data-index="'+index+'"]').val() !== "" || $('.plg_def_filter.filter_json[data-index="'+index+'"]').val() !== "" /*|| $('.plg_def_filter.filter_values[data-index="'+index+'"]').val() != ""*/){
+      try {
+        plg_regs_statistic_filter_list[$(this).data('index')] = {
+          'enable' : $('.plg_def_filter.filter_enable[data-index="'+index+'"]')[0].checked,
+          'name' : ($('.plg_def_filter.filter_name[data-index="'+index+'"]').val() !== "") ? $('.plg_def_filter.filter_name[data-index="'+index+'"]').val() : "",
+          'json_filter': ($('.plg_def_filter.filter_json[data-index="'+index+'"]').val() !=="") ? JSON.parse($('.plg_def_filter.filter_json[data-index="'+index+'"]').val()) : ""
+        };
+
+        if (($("div [id^='plg_def_filter_']").length - 1) === index) {
+          $('#plg_def_filter_' + index).after('<div class="row" id="plg_def_filter_' + (index + 1) + '">' +
+              '<div class="col-sm-1">'+
+              '<label style="font-size: 11px">Включить</label><br>'+
+              '<input class="plg_def_filter filter_enable" data-index="' + (index + 1) + '" type="checkbox" name="filter_enable">'+
+              '</div>'+
+              '<div class="col-sm-3">' +
+              '<label style="font-size: 11px">Наименование</label><br>' +
+              '<textarea class="plg_def_filter filter_regs" data-index="' + (index + 1) + '" rows="5" placeholder=\'Введите наименование фильтра\' style="height:100px; width:100%"></textarea>' +
+              '</div>' +
+              '<div class="col-sm-8">' +
+              '<label style="font-size: 11px">JSON фильтр</label><br>' +
+              '<textarea class="plg_def_filter filter_json" data-index="' + (index + 1) + '" rows="5" placeholder=\'[{"array":{"statements":{"like":{"requestedDocument":["Выписка из Единого государственного реестра недвижимости о правах отдельного лица на имевшиеся (имеющиеся) у него объекты недвижимости."]}}}}]\' style="height:100px; width:100%"></textarea>' +
+              '</div>' +
+              '</div>');
+        }
+      } catch (e){
+        alert('Ошибка ввода в формате JSON фильтра!');
+      }
+    } else {
+      plg_regs_statistic_filter_list.splice([index], 1);
+      if (index>0) {
+        $('#plg_def_filter_' + (index)).remove();
+        for (var j = index + 1; j <= $("div [id^='plg_def_filter_']").length; j++) {
+          $("#plg_def_filter_" + (j) + " .plg_def_filter").attr('data-index', j - 1);
+          $("#plg_def_filter_" + (j)).attr('id', 'plg_def_filter_' + (j - 1));
+        }
+      }
+      /*if(($("div [id^='plg_def_filter_']").length-2) === index){
+          $('#plg_def_filter_'+(index+1)).remove();
+      }*/
+    }
+    window.localStorage.plg_regs_statistic_filter_list = JSON.stringify(plg_regs_statistic_filter_list);
+    chrome.storage.local.set({plg_regs_statistic_filter_list: JSON.stringify(plg_regs_statistic_filter_list)}, function(){
+      console.log(JSON.stringify(plg_regs_statistic_filter_list));
+    });
+  });
 });

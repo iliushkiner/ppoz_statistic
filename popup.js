@@ -1,5 +1,8 @@
 // JavaScript Document
 let ready = false;
+//let global_count_nums = 0;
+let nums_ajax_threads = new Map();
+
 $(document).ready(function () {
     //var htm = $(".statement-number").html();
     //let podrazc = localStorage['podrazdelenie'];
@@ -14,7 +17,6 @@ $(document).ready(function () {
       podrazdelenie: window.localStorage.plg_def_podraz.split(';')
     };
     load_inf_statistic(request);*/
-    ready = true;
     let count_date = $('#countdate');
     count_date.on('change past kayup select', function () {
         let plg_count_date = count_date.val();
@@ -40,6 +42,7 @@ $(document).ready(function () {
     let date_to = new Date();
     let str_date_to = date_to.getFullYear() + '-' + ((date_to.getMonth() + 1) < 10 ? '0' : '') + (date_to.getMonth() + 1) + '-' + ((date_to.getDate()) < 10 ? '0' : '') + date_to.getDate();
     $("#filtrdate").val(str_date_to);
+    ready = true;
 });
 
 let current_request = 0;
@@ -60,7 +63,44 @@ let current_request = 0;
   });
   return result
 }*/
-function getAjaxData(url, selctor, json) {
+function getByIdAjaxData(url, root_selector, selector, json_filter_list) {
+    $.ajax({
+        url: url,
+        dataType: "json",
+        method: "GET",
+        contentType: "application/json;charset=UTF-8",
+        async: true,
+        success: function (data) {
+            //console.log(data);
+            //let output_data = $(root_selector + selector).html();
+            let select_nums = $('#reg_nums_' + root_selector + selector);
+            let output_data = (select_nums.html() !== '<img src="loading.gif" alt="loading" class="loading">' ? $('#reg_nums_' + root_selector + selector).html() : '');
+            let select_count = $('#' + root_selector + selector);
+
+            $.each(json_filter_list, function(index, list_item) {
+                if(list_item.enable) {
+                    if (check_JSON_Filter(list_item.json_filter, data)) {
+                        output_data += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/#/administration/details/' + data.appealNumber + '/data" target="_blank">' + data.appealNumber + '</a>';
+                        output_data += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + data.appealNumber + '" target="_blank">[JSON]</a>; ';
+                        //let count_nums = (select_count.html() !== '<img src="loading.gif" alt="loading" class="loading">' ? $('#' + root_selector + selector + " .count").html() : '0');
+                        select_count.html("<span class='count'>" + (nums_ajax_threads.get(root_selector).get(selector).count_nums++) + "</span><img src='loading.gif' alt='loading' class='loading'>");
+                        return false;
+                    }
+                }
+            });
+            nums_ajax_threads.get(root_selector).get(selector).threads.delete(data.appealNumber);
+            if(nums_ajax_threads.get(root_selector).get(selector).threads.size < 1) {
+                select_count.html("<span class='count'>" + (nums_ajax_threads.get(root_selector).get(selector).count_nums) + "</span>");
+            }
+
+            //$(root_selector + selector).html("<span class='nums'>" + output_data + "</span><img src='loading.gif' alt='loading' class='loading'>");
+            select_nums.html(output_data);
+            //select_nums.html("<span class='nums'>" + output_nums + "</count><img src='loading.gif' alt='loading' class='loading'>");
+        }
+    });
+}
+
+function getAjaxData(url, root_selector, selector, json, on_filters = false) {
     $.ajax({
         url: url,
         dataType: "json",
@@ -71,16 +111,149 @@ function getAjaxData(url, selctor, json) {
         success: function (data) {
             //console.log(data);
             //result = data;
-            let count = ($(selctor).html() !== '<img src="loading.gif" alt="loading" class="loading">' ? parseInt($(selctor + " .count").html()) : 0);
+            let select_count = $('#' + root_selector + selector);
+            let count_nums = (select_count.html() !== '<img src="loading.gif" alt="loading" class="loading">' ? $('#' + root_selector + selector + " .count").html() : '0');
+            let select_nums = $('#reg_nums_' + root_selector + selector);
+            let output_nums = (select_nums.html() !== '<img src="loading.gif" alt="loading" class="loading">' ? select_nums.html() : '');
+            count_nums = parseInt(count_nums);
+
             if (data.requests.length > 0) {
-                $(selctor).html("<span class='count'>" + (count + data.requests.length) + "</count><img src='loading.gif' alt='loading' class='loading'>");
+                count_nums = (count_nums + data.requests.length);
+                let plg_regs_statistic_filter_list = [];
+                if (on_filters) {
+                    plg_regs_statistic_filter_list = (typeof (window.localStorage.plg_regs_statistic_filter_list) != "undefined" && window.localStorage.plg_regs_statistic_filter_list != null) ? JSON.parse(window.localStorage.plg_regs_statistic_filter_list) : [];
+                    console.log("plg_regs_statistic_filter_list:", plg_regs_statistic_filter_list);
+                }
+
+                data.requests.forEach(function (item) {
+                    if (on_filters) {
+                        let request_url = 'http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + item.appealNumber;
+                        nums_ajax_threads.get(root_selector).get(selector).threads.set(item.appealNumber, 'on');
+                        getByIdAjaxData(request_url, root_selector, selector, plg_regs_statistic_filter_list);
+                    } else {
+                        //output_nums += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + item.appealNumber + '" target="_blank">' + item.appealNumber + '</a>; ';
+                        output_nums += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/#/administration/details/' + item.appealNumber + '/data" target="_blank">' + item.appealNumber + '</a>';
+                        output_nums += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + item.appealNumber + '" target="_blank">[JSON]</a>; ';
+                    }
+
+                })
+
+                if (!on_filters) {
+                    select_nums.html(output_nums);
+                    select_count.html("<span class='count'>" + count_nums + "</span><img src='loading.gif' alt='loading' class='loading'>");
+                }
+
                 json.pageNumber++;
-                getAjaxData(url, selctor, json)
+                getAjaxData(url, root_selector, selector, json, on_filters)
             } else {
-                $(selctor).html("<span class='count'>" + (count) + "</count>");
+                if (!on_filters) {
+                    $('#' + root_selector + selector).html("<span class='count'>" + count_nums + "</span>");
+                } else {
+                    if(nums_ajax_threads.get(root_selector).get(selector).threads.size === 0) {
+                        $('#' + root_selector + selector).html("<span class='count'>" + (nums_ajax_threads.get(root_selector).get(selector).count_nums) + "</span>");
+                    }
+                }
+                select_nums.html(output_nums);
             }
         }
     });
+}
+
+/**
+ * Проверяет фильтр и возвращает true если условия подходят
+ */
+function check_filter(index, value, reqbyiditem, like){
+    let result = true;
+    if (index !== 'array' && index !== 'like'){
+        /**
+         * Проверка на массив. В некоторых случаях value определяется как объект вместо Array
+         */
+        let is_array = false;
+        $.each(value, function(vindex,vvalue){
+            is_array = (vindex === 0);
+            return false;
+        });
+
+        if(/*Array.isArray(value)*/is_array){
+            if(!like){
+                $.each(value, function(vindex,vvalue){
+                    value[vindex] = vvalue.replace(/\s+/g,"");
+                });
+                result = (value.indexOf(reqbyiditem[index].replace(/\s+/g,""))>=0);
+            } else {
+                for(let likeval of value){
+                    /**
+                     * Ищем вхождение подстроки likeval в reqbyiditem[index]
+                     */
+                    if(reqbyiditem[index] !== ""){
+                        let patern = new RegExp(likeval,'g');
+                        let match = reqbyiditem[index].match(patern);
+                        result = (typeof(match) != "undefined" &&  match != null && match.length>0);
+                        if (result) break;
+                    } else {
+                        result = false;
+                        break;
+                    }
+
+                }
+            }
+        } else if(typeof(value) === 'object'){
+            $.each(value, function(vindex,vvalue){
+                result = check_filter(vindex, vvalue, reqbyiditem[vindex], false);
+                return result;
+            });
+        }
+    }else if(index === 'like'){
+        console.log("UPS LIKE!");
+        $.each(value, function(vindex,vvalue){
+            result = (result && check_filter(vindex, vvalue, reqbyiditem, true));
+            return !result;
+            /*if (!result) {
+                break;
+            }*/
+        });
+    } else {
+        //for(let filter of value.array){
+        $.each(value, function(vindex,vvalue){
+            if (reqbyiditem[vindex].length > 0){
+                for(let reqbyid_arrayitem of reqbyiditem[vindex]){
+                    result = true;
+                    $.each(vvalue, function(vvindex,vvvalue){
+                        result = (result && check_filter(vvindex, vvalue[vvindex], reqbyid_arrayitem, false));
+                        return result;
+                    });
+                    if (result) {
+                        break;
+                    }
+                }
+            } else {
+                result = false;
+                return result;
+            }
+        });
+    }
+    return result;
+}
+
+function check_JSON_Filter(json_filter, reqbyid){
+    //console.log("json_filter",json_filter);
+    //console.log("reqbyid",reqbyid);
+    let filterstatus = true;
+    for(let filter of json_filter){
+        filterstatus = true;
+        $.each(filter, function(index,value){
+            filterstatus = (filterstatus && check_filter(index, value, reqbyid, false));//(value.indexOf(reqbyid[index])>=0);
+            /**
+             * выход если параметр фильтра не соответствует обращению.
+             * выход из $.each return false;
+             */
+            return filterstatus;
+        });
+        if (filterstatus) {
+            break;
+        }
+    }
+    return filterstatus;
 }
 
 /*function getCountAppealNumber(url, selector, json){
@@ -95,6 +268,7 @@ function getAjaxData(url, selctor, json) {
 }*/
 
 function load_inf_statistic(request) {
+    nums_ajax_threads = new Map();
     let statistic = $("#statistic");
     statistic.html("");
     /*console.log("Получено:");
@@ -140,12 +314,18 @@ function load_inf_statistic(request) {
                 str_date_yesterday = ""+ date_yesterday.getFullYear() + '-' + ((date_yesterday.getMonth()+1)<10 ? '0' : '') + (date_yesterday.getMonth()+1) + '-' + ((date_yesterday.getDate())<10 ? '0' : '') + date_yesterday.getDate();*/
 
                 let regs = (typeof (window.localStorage.plg_def_regs) != "undefined" && window.localStorage.plg_def_regs != null) ? (window.localStorage.plg_def_regs).split(',') : [];
+                console.log("regs:",regs);
 
                 let plg_regs_enable = (typeof (window.localStorage.plg_def_regs) != "undefined" || window.localStorage.plg_def_regs != null);
+                console.log("plg_regs_enable:",plg_regs_enable);
+
                 for (let i in data) {
                     if (data.hasOwnProperty(i)) {
                         if ($.inArray(data[i].login, regs) >= 0 || plg_regs_enable === false || window.localStorage.plg_regs_enable === "false") {
-                            let regrole = 0;
+                            /**
+                             * Не исползуется
+                             */
+                            /*let regrole = 0;
                             for (let j in data[i].roles) {
                                 if (data[i].roles.hasOwnProperty(j)) {
                                     if (data[i].roles[j].mnemonic === "PKURP_REG") {
@@ -157,10 +337,15 @@ function load_inf_statistic(request) {
                                         break;
                                     }
                                 }
-                            }
+                            }*/
                             let reg = data[i].lastName + " " + data[i].firstName[0] + "." + data[i].patronymic[0] + ".<br><span style='font-size: 9px;'>" + data[i].login + "<span/>";
+                            let statistic_filter_enable = (window.localStorage.plg_regs_statistic_filter_enable === "true");
+                            let type_selector = new Map();
+                            type_selector.set(" .in_work", {count_nums : 0, threads: new Map()});
+                            nums_ajax_threads.set(data[i].login, type_selector);
 
-                            table += "<tr id='" + data[i].login + "'><td width='300'>" + reg + "</td>";
+
+                            table += "<tr id='" + data[i].login + "' data-toggle='collapse' data-target='#reg_nums_" + data[i].login + "'><td width='300'>" + reg + "</td>";
 
                             /**
                              *В работе на текущий момент
@@ -180,7 +365,7 @@ function load_inf_statistic(request) {
                                 executors: [data[i].login],
                                 byActiveExecutor: true
                             };
-                            getAjaxData(requrl, "#" + data[i].login + " .in_work", json);
+                            getAjaxData(requrl, data[i].login, " .in_work", json, statistic_filter_enable);
                             //getCountAppealNumber(requrl,"#"+data[i].login+" .in_work", json);
                             table += "<td class='in_work'><img src='loading.gif' alt='loading' class='loading'></td>";
 
@@ -204,7 +389,8 @@ function load_inf_statistic(request) {
                                         executors: [data[i].login],
                                         byActiveExecutor: true
                                     };
-                                    getAjaxData(requrl, "#" + data[i].login + " .today_" + j, json);
+                                    getAjaxData(requrl, data[i].login, " .today_" + j, json, statistic_filter_enable);
+                                    nums_ajax_threads.get(data[i].login).set(" .today_" + j, {count_nums : 0, threads: new Map()});
                                     table += "<td class='today_" + j + "'><img src='loading.gif' alt='loading' class='loading'></td>";
                                 }
                             }
@@ -223,12 +409,14 @@ function load_inf_statistic(request) {
                                     json = {
                                         pageNumber: 0,
                                         pageSize: 1000,
+                                        //statuses: request.statuses,
                                         subjectRF: [request.region],
                                         executorDepartments: [podrazdc],
                                         executors: [data[i].login],
                                         completionDate: {dateFrom: req_date, dateTo: req_date}
                                     };
-                                    getAjaxData(requrl, "#" + data[i].login + " .closed_today_" + j, json);
+                                    getAjaxData(requrl, data[i].login, " .closed_today_" + j, json, statistic_filter_enable);
+                                    nums_ajax_threads.get(data[i].login).set(" .closed_today_" + j, {count_nums : 0, threads: new Map()});
                                     table += "<td class='closed_today_" + j + "'><img src='loading.gif' alt='loading' class='loading'></td>";
                                 }
                             }
@@ -262,12 +450,27 @@ function load_inf_statistic(request) {
                                         executors: [data[i].login],
                                         byActiveExecutor: true
                                     };
-                                    getAjaxData(requrl, "#" + data[i].login + " .delay_" + j, json);
+                                    getAjaxData(requrl, data[i].login, " .delay_" + j, json, statistic_filter_enable);
+                                    nums_ajax_threads.get(data[i].login).set(" .delay_" + j, {count_nums : 0, threads: new Map()});
                                     table += "<td class='delay_" + j + "'><img src='loading.gif' alt='loading' class='loading'></td>";
                                 }
                             }
 
                             table += "</tr>";
+                            /*if(statistic_filter_enable) {*/
+                                table += "<tr id='reg_nums_" + data[i].login + "' class='collapse'>";
+                                table += "<td class='in_work' colspan='2'><img src='loading.gif' alt='loading' class='loading'></td>";
+                                for (let j = 0; j <= parseInt(window.localStorage.plg_countdate); j++) {
+                                    table += (window.localStorage.plg_inwork_enable === "true" ? "<td class='today_" + j + "'><img src='loading.gif' alt='loading' class='loading'></td>" : "");
+                                }
+                                for (let j = 0; j <= parseInt(window.localStorage.plg_countdate); j++) {
+                                    table += (window.localStorage.plg_closed_enable === "true" ? "<td class='closed_today_" + j + "'><img src='loading.gif' alt='loading' class='loading'></td>" : "");
+                                }
+                                for (let j = 0; j <= parseInt(window.localStorage.plg_countdate); j++) {
+                                    table += (window.localStorage.plg_expiried_enable === "true" ? "<td class='delay_" + j + "'><img src='loading.gif' alt='loading' class='loading'></td>" : "");
+                                }
+                                table += "</tr>";
+                            /*}*/
                         }
                     }
                 }
