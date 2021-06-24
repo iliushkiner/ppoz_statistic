@@ -1,5 +1,6 @@
 // JavaScript Document
-let ready = false;
+let ready = false
+let statistic_run = false;
 //let global_count_nums = 0;
 let nums_ajax_threads = new Map();
 
@@ -26,16 +27,28 @@ $(document).ready(function () {
         });
     });
 
-    $('#filtrdate').on('change past kayup select', function () {
-        let current_request = window.localStorage.curent_request;
-        load_inf_statistic(JSON.parse(current_request));
-    });
-
-    count_date.on('change past kayup select', function () {
+    $('#refresh').on('click', function () {
+        $(this).attr('disabled', true);
         let current_request = window.localStorage.curent_request;
         $("#statistic").html("<div style='text-align: center;'><img src='loading.gif' alt='loading'></div>");
-        load_inf_statistic(JSON.parse(current_request));
+        if(!statistic_run) {
+            load_inf_statistic(JSON.parse(current_request));
+        }
     });
+    /*$('#filtrdate').on('change past kayup select', function () {
+        let current_request = window.localStorage.curent_request;
+        if(!statistic_run) {
+            load_inf_statistic(JSON.parse(current_request));
+        }
+    });*/
+
+    /*count_date.on('change past kayup select', function () {
+        let current_request = window.localStorage.curent_request;
+        $("#statistic").html("<div style='text-align: center;'><img src='loading.gif' alt='loading'></div>");
+        if(!statistic_run) {
+            load_inf_statistic(JSON.parse(current_request));
+        }
+    });*/
 
     count_date.val(window.localStorage.plg_countdate);
     $("#now").html("<span style='color:red;'>сведения на</span>: <strong style='font-size: 11px'>" + Date() + "</strong>");
@@ -81,7 +94,7 @@ function getByIdAjaxData(url, root_selector, selector, json_filter_list) {
                 if(list_item.enable) {
                     if (check_JSON_Filter(list_item.json_filter, data)) {
                         output_data += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/#/administration/details/' + data.appealNumber + '/data" target="_blank">' + data.appealNumber + '</a>';
-                        output_data += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + data.appealNumber + '" target="_blank">[JSON]</a>; ';
+                        output_data += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + data.appealNumber + '" target="_blank" class="json">[JSON]</a>; ';
                         //let count_nums = (select_count.html() !== '<img src="loading.gif" alt="loading" class="loading">' ? $('#' + root_selector + selector + " .count").html() : '0');
                         select_count.html("<span class='count'>" + (nums_ajax_threads.get(root_selector).get(selector).count_nums++) + "</span><img src='loading.gif' alt='loading' class='loading'>");
                         return false;
@@ -133,7 +146,7 @@ function getAjaxData(url, root_selector, selector, json, on_filters = false) {
                     } else {
                         //output_nums += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + item.appealNumber + '" target="_blank">' + item.appealNumber + '</a>; ';
                         output_nums += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/#/administration/details/' + item.appealNumber + '/data" target="_blank">' + item.appealNumber + '</a>';
-                        output_nums += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + item.appealNumber + '" target="_blank">[JSON]</a>; ';
+                        output_nums += '<a href="http://ppoz-service-bal-01.prod.egrn:9001/manager/requests/byId?id=' + item.appealNumber + '" target="_blank" class="json">[JSON]</a>; ';
                     }
 
                 })
@@ -268,6 +281,7 @@ function check_JSON_Filter(json_filter, reqbyid){
 }*/
 
 function load_inf_statistic(request) {
+    statistic_run = true;
     nums_ajax_threads = new Map();
     let statistic = $("#statistic");
     statistic.html("");
@@ -523,6 +537,8 @@ function load_inf_statistic(request) {
             }
         });
     });
+    statistic_run = false;
+    $('#refresh').attr('disabled', false);
 }
 
 chrome.runtime.onMessage.addListener(
@@ -532,7 +548,7 @@ chrome.runtime.onMessage.addListener(
         //sendResponse({farewell: "goodbye"});
         /*if (curentpodr!=request.podrazdelenie){
           curentpodr = request.podrazdelenie;*/
-        if (current_request !== JSON.stringify(request) && ready) {
+        if (current_request !== JSON.stringify(request) && ready && !statistic_run) {
             //console.log(request);
             current_request = JSON.stringify(request);
             request = {

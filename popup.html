@@ -9,16 +9,19 @@
     <script src="popup.js" type="text/javascript"></script>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
-    <link href="popup.css" rrel="stylesheet" rel="stylesheet" type="text/css"/>
+    <link href="popup.css" rel="stylesheet" type="text/css"/>
   </head>
   <body>
      <div class="content">
       <h3>Статистика регдействий</h3>
       <fieldset>
         <legend style='font-size: 11px'>Выберите интересущую дату и количество дней вперед (назад для завершенных и просроченных)</legend>
-        <input id="filtrdate" type="date" style="height:26px">
-        <input id="countdate" type="number" value="0" step="1" min="0" max="14" style="height:26px"><br>
-        <a href="chrome-extension://legkplpjcehfkagdhmpjghcohboohpnh/options.html" style='font-size: 11px' target="_blank">Дополнительные параметры расширения</a>        
+          <input id="filtrdate" type="date" style="height:26px">
+          <input id="countdate" type="number" value="0" step="1" min="0" max="14" style="height:26px">
+          <button id="refresh" type="button" class="btn btn-primary btn-circle" disabled><img src="refresh.png" alt="Refresh" title="Refresh" width="24px"></button>
+          <br>
+          <a href="chrome-extension://legkplpjcehfkagdhmpjghcohboohpnh/options.html" style='font-size: 11px'
+             target="_blank">Дополнительные параметры расширения</a>
       </fieldset>
       <br>
       <div id="now"></div>      
