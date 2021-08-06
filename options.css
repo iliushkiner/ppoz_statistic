@@ -1,3 +1,9 @@
 .loading {
   height: 30px;
 }
+span.on {
+  color:green;
+}
+span.off {
+  color:red;
+}
