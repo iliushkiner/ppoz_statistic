@@ -1,5 +1,7 @@
 function Options_filter() {
+	let name = 'Наименование фильтра'
 	let enable = false//true
+	let objectRegions =12
 	let region = 12
 	let podrazdelenie = ''
 	let regs_enable = false
@@ -7,6 +9,8 @@ function Options_filter() {
 	let closed_enable = false//true
 	let expiried_enable = false
 	let inwork_enable = false//true
+	let expires = '' //не использовать в фильтре, today - сегдня, yesterday - вчера
+	let categories = ''
 	let def_status = ''
 	let additional_filter_enable = false//true
 	let additional_filter_list = [/*{
@@ -30,10 +34,12 @@ function Options_filter() {
 		"name": "ВТБ",
 		"json_filter": [{"array": {"statements": {"array": {"documents": {"like": {"name": ["ВТБ"]}}}}}}]
 	}*/]
+	let requestTypes = ''
 
 	return {
 		getJSON() {
-			return {
+			return /*"Ha-ha";*/{
+				'objectRegions': objectRegions,
 				'region': region,
 				'podrazdelenie': podrazdelenie,
 				'regs_enable': regs_enable,
@@ -42,15 +48,30 @@ function Options_filter() {
 				'expiried_enable': expiried_enable,
 				'inwork_enable': inwork_enable,
 				'def_status': def_status,
-				'additional_filter_enable': regs_statistic_filter_enable,
-				'additional_filter_list': JSON.stringify(regs_statistic_filter_list)
+				'categories': categories,
+				'expires' : expires,
+				'requestTypes': requestTypes,
+				'additional_filter_enable': additional_filter_enable,
+				'additional_filter_list': JSON.stringify(additional_filter_list)
 			}
+		},
+		set name(filter_name){
+			name = filter_name;
+		},
+		get name(){
+			return name;
 		},
 		set enable(bool) {
 			enable = bool;
 		},
 		get enable() {
 			return enable;
+		},
+		set objectRegions(code){
+			objectRegions = code;
+		},
+		get objectRegions(){
+			return objectRegions;
 		},
 		set region(code) {
 			region = code;
@@ -94,11 +115,29 @@ function Options_filter() {
 		get inwork_enable() {
 			return inwork_enable;
 		},
+		set categories(categ) {
+			categories = categ;
+		},
+		get categories(){
+			return categories;
+		},
 		set def_status(status) {
-			def_status = status
+			def_status = status;
+		},
+		get expires(){
+			return expires;
+		},
+		set expires(day){
+			expires = day;
 		},
 		get def_status() {
-			return def_status
+			return def_status;
+		},
+		set requestTypes(types){
+			requestTypes = types;
+		},
+		get requestTypes(){
+			return requestTypes;
 		},
 		set additional_filter_enable(bool) {
 			additional_filter_enable = bool;
@@ -137,9 +176,10 @@ function Options_filter() {
 	}
 };
 
-//const filter = new Options_filter();
+/*let filter = Options_filter();
 //filter.load();
 //filter.additional_filter_list=[{'fu': 'fu1'}]
-//console.dir(filter.additional_filter_list);
-//console.dir(filter.getJSON());
-//console.log(filter);
+filter.region = 13;
+console.dir(filter);
+console.dir(filter.getJSON());
+//console.log(filter);*/

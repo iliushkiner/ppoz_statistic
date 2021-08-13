@@ -1,8 +1,8 @@
 // JavaScript Document
 $(document).ready(function () {
-	const options = new Options();
+	const options = Options();
 	options.load();
-	options.filter_list.push(new Options_filter());
+	options.filter_list.push(Options_filter());
 	let htm1 = options.getFilterBlock();
 
 	$('#options').html(htm1);
@@ -30,7 +30,7 @@ $(document).ready(function () {
 			});
 			//options.filter_list.splice(-1);
 			options.save();
-			options.filter_list.push(new Options_filter());
+			options.filter_list.push(Options_filter());
 		}
 	}
 
@@ -42,7 +42,7 @@ $(document).ready(function () {
 		$("#plg_filter_" + index + " .on_off").html($(this)[0].checked ? '(ON)' : '(OFF)');
 		change_property(index);
 		//console.dir(options);
-		//options.filter_list.push(new Options_filter());
+		//options.filter_list.push(Options_filter());
 		//console.dir(options);
 	});
 
@@ -55,10 +55,10 @@ $(document).ready(function () {
 			options.filter_list.splice(index,1);
 			options.filter_list.splice(-1);
 			options.save();
-			options.filter_list.push(new Options_filter());
+			options.filter_list.push(Options_filter());
 			$("#plg_filter_" + index).remove();
 		}
-		//options.filter_list.push(new Options_filter());
+		//options.filter_list.push(Options_filter());
 		//console.dir(options);
 	});
 
@@ -75,7 +75,7 @@ $(document).ready(function () {
 		options.filter_list[index][param_name] = $(this)[0].checked;
 		change_property(index);
 		//console.dir(options);
-		//options.filter_list.push(new Options_filter());
+		//options.filter_list.push(Options_filter());
 		//console.dir(options);
 	});
 	body.on('change past kayup select', '.filter_list_item .input_text_add_param', function () {
