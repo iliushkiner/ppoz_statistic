@@ -1,0 +1,502 @@
+Key:
+plg_options_list
+
+Value:
+[
+  {
+    "enable": true,
+    "region": "12",
+    "podrazdelenie": "",
+    "def_regs": "vvmochalova,alvmalysheva",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "initial_examinations",
+    "additional_filter_enable": false,
+    "additional_filter_list": [
+      {
+        "enable": false,
+        "name": "выписки 2",
+        "json_filter": [
+          {
+            "array": {
+              "statements": {
+                "like": {
+                  "requestedDocument": [
+                    "Выписка из Единого государственного реестра недвижимости о переходе прав на объект недвижимости"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "enable": false,
+        "name": "Выписки",
+        "json_filter": [
+          {
+            "array": {
+              "statements": {
+                "like": {
+                  "requestedDocument": [
+                    "Выписка из Единого государственного реестра недвижимости о правах отдельного лица на имевшиеся (имеющиеся) у него объекты недвижимости."
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "enable": false,
+        "name": "test1",
+        "json_filter": [
+          {
+            "appealNumber": [
+              "US-2021-08-12-080825"
+            ]
+          }
+        ]
+      }
+    ],
+    "name": "Предварительная правовая экспертиза (Всего)",
+    "objectRegions": "",
+    "requestTypes": "",
+    "expires": "",
+    "categories": ""
+  },
+  {
+    "name": "Предварительная правовая экспертиза (в том числе в Межрайонном отделе Филиала)",
+    "enable": true,
+    "region": 12,
+    "podrazdelenie": "12.028",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "initial_examinations",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "objectRegions": "",
+    "requestTypes": "",
+    "expires": "",
+    "categories": ""
+  },
+  {
+    "name": "В работе у специалистов Кадастровой палаты",
+    "enable": true,
+    "objectRegions": "12",
+    "region": 12,
+    "podrazdelenie": "12.028",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "pkurp_validations",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "requestTypes": "",
+    "expires": "",
+    "categories": ""
+  },
+  {
+    "name": "В работе у специалистов Кадастровой палаты (Приставы)",
+    "enable": true,
+    "objectRegions": 12,
+    "region": 12,
+    "podrazdelenie": "12.028",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "pkurp_validations",
+    "requestTypes": "111300021000",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "expires": "",
+    "categories": ""
+  },
+  {
+    "name": "В работе у специалистов Кадастровой палаты (ГРП (Кудрявцев))",
+    "enable": true,
+    "objectRegions": "",
+    "region": 12,
+    "podrazdelenie": "12.036,12.028",
+    "def_regs": "nakoroleva,nnbolotova,\tsvsozonova,vvmochalova,lvsorokina,dakhristoliubova,aamuraveva,smkudriavtcev,memalaeva,iilavrenteva,taazakharova,sazagainov",
+    "regs_enable": true,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "pkurp_validations",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": []
+  },
+  {
+    "name": "В работе у специалистов Кадастровой палаты (ГКУ, ГКУ и ГРП (Степанова))",
+    "enable": true,
+    "objectRegions": "",
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "mkravtcova,evzaitceva,eamakarova,vaadolgusheva,krastepanova,tchegaeva,epchernobakhtova,toiandemirova,alvmalysheva,egobbel",
+    "regs_enable": true,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "pkurp_validations",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": []
+  },
+  {
+    "name": "В работе у специалистов Кадастровой палаты (Тех.ошибки и корректировка)",
+    "enable": true,
+    "objectRegions": 12,
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "pkurp_validations",
+    "requestTypes": "111300008000,111300007000",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "expires": "",
+    "categories": ""
+  },
+  {
+    "name": "В работе у регистратора, принимающего решение",
+    "enable": true,
+    "objectRegions": 12,
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "reg_validations",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "categories": ""
+  },
+  {
+    "name": "В работе у регистратора, принимающего решение (из них срок истек)",
+    "enable": true,
+    "objectRegions": 12,
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "reg_validations",
+    "expires": "yesterday",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "categories": ""
+  },
+  {
+    "name": "В работе у регистратора, принимающего решение (в том числе приставы)",
+    "enable": true,
+    "objectRegions": 12,
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "reg_validations",
+    "expires": "yesterday",
+    "requestTypes": "111300021000",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "categories": ""
+  },
+  {
+    "name": "В работе со статусом «Определение кадастровой стоимости»",
+    "enable": true,
+    "objectRegions": 12,
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "cadastral_cost_determination",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "categories": ""
+  },
+  {
+    "name": "В работе со статусом «Определение кадастровой стоимости»(из них срок истек)",
+    "enable": true,
+    "objectRegions": 12,
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "cadastral_cost_determination",
+    "expires": "yesterday",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "categories": ""
+  },  
+  {
+    "name": "В работе у специалистов по ведению архива",
+    "enable": true,
+    "objectRegions": "",
+    "region": 12,
+    "podrazdelenie": "12.028",
+    "def_regs": "aamoskvina",
+    "regs_enable": true,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "formation_that_matters",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": []
+  },
+  {
+    "name": "В работе у специалистов по ведению архива (из них срок истек)",
+    "enable": true,
+    "objectRegions": "",
+    "region": 12,
+    "podrazdelenie": "12.028",
+    "def_regs": "aamoskvina",
+    "regs_enable": true,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "formation_that_matters",
+    "expires": "yesterday",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": []
+  },
+  {
+    "name": "В работе по запросам",
+    "enable": true,
+    "objectRegions": "",
+    "region": 12,
+    "podrazdelenie": "12.028",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "find_object_to_extractions,pkurp_validations",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": [
+      {
+        "enable": false,
+        "name": "Выписка  о содержании правоустанавливающих документов",
+        "json_filter": [
+          {
+            "array": {
+              "statements": {
+                "like": {
+                  "requestedDocument": [
+                    "Выписка о содержании правоустанавливающих документов"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "В работе по запросам (Правоуст.док.)",
+    "enable": true,
+    "objectRegions": "",
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "find_object_to_extractions,pkurp_validations",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": true,
+    "additional_filter_list": [
+      {
+        "enable": true,
+        "name": "Выписка  о содержании правоустанавливающих документов",
+        "json_filter": [
+          {
+            "array": {
+              "statements": {
+                "like": {
+                  "requestedDocument": [
+                    "Выписка о содержании правоустанавливающих документов"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "В работе по запросам (срок истек)",
+    "enable": true,
+    "objectRegions": "",
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "find_object_to_extractions,pkurp_validations",
+    "expires": "yesterday",
+    "requestTypes": "",
+    "additional_filter_enable": true,
+    "additional_filter_list": [
+      {
+        "enable": true,
+        "name": "Выписка  о содержании правоустанавливающих документов",
+        "json_filter": [
+          {
+            "array": {
+              "statements": {
+                "like": {
+                  "requestedDocument": [
+                    "Выписка о содержании правоустанавливающих документов"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "В работе по запросам (срок истекает сегодня)",
+    "enable": true,
+    "objectRegions": "",
+    "region": 12,
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "find_object_to_extractions,pkurp_validations",
+    "expires": "today",
+    "requestTypes": "",
+    "additional_filter_enable": true,
+    "additional_filter_list": [
+      {
+        "enable": true,
+        "name": "Выписка  о содержании правоустанавливающих документов",
+        "json_filter": [
+          {
+            "array": {
+              "statements": {
+                "like": {
+                  "requestedDocument": [
+                    "Выписка о содержании правоустанавливающих документов"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "В очереди на автоматических проверках",
+    "enable": true,
+    "objectRegions": 12,
+    "region": "",
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "def_status": "",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": [],
+    "categories": "1_before_work"
+  },
+  {
+    "name": "В очереди на автоматических проверках (из них запросы)",
+    "enable": true,
+    "objectRegions": 12,
+    "region": "",
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "1_before_work",
+    "def_status": "",
+    "expires": "",
+    "requestTypes": "111300003000,111300018000,111300011000",
+    "additional_filter_enable": false,
+    "additional_filter_list": []
+  },
+  {
+    "name": "На стадии подписание реестровых дел",
+    "enable": true,
+    "objectRegions": 12,
+    "region": "",
+    "podrazdelenie": "",
+    "def_regs": "",
+    "regs_enable": false,
+    "closed_enable": false,
+    "expiried_enable": false,
+    "inwork_enable": false,
+    "categories": "",
+    "def_status": "registry_case_signatures",
+    "expires": "",
+    "requestTypes": "",
+    "additional_filter_enable": false,
+    "additional_filter_list": []
+  }
+]
