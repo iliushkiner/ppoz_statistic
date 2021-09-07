@@ -78,6 +78,13 @@ $(document).ready(function () {
 		//options.filter_list.push(Options_filter());
 		//console.dir(options);
 	});
+
+	body.on('click', '.plg_filter_table_style', function () {
+		options.table_style = $(this)[0].value;
+		options.save();
+		//console.dir(options);
+	});
+
 	body.on('change past kayup select', '.filter_list_item .input_text_add_param', function () {
 		let index = $(this).parents(".plg_filter").data('index');
 		let list_index = $(this).parents(".filter_list_item").data('index');

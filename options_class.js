@@ -1,4 +1,5 @@
 function Options() {
+    let table_style = 'vertical'
     let filter_list = []
     return {
         load() {
@@ -9,6 +10,7 @@ function Options() {
                 //options_filter.init();
                 filter_list.push(options_filter);
             }
+            table_style = (typeof (window.localStorage.plg_options_table_style) != "undefined" && window.localStorage.plg_options_table_style != null) ? window.localStorage.plg_options_table_style : 'vertical';
         },
         save() {
             /*if(filter_list.length>1) {
@@ -19,6 +21,11 @@ function Options() {
                     filter_item.additional_filter_list.splice(-1);
                 }
             });*/
+            window.localStorage.plg_options_table_style = table_style;
+            chrome.storage.local.set({plg_options_table_style: table_style}, function () {
+                console.log(table_style);
+            });
+
             window.localStorage.plg_options_list = JSON.stringify(filter_list);
             chrome.storage.local.set({plg_options_list: JSON.stringify(filter_list)}, function () {
                 console.log(JSON.stringify(filter_list));
@@ -27,9 +34,18 @@ function Options() {
         get filter_list() {
             return filter_list;
         },
+        set table_style(style){
+            table_style = style;
+        },
+        get table_style(){
+            return table_style;
+        },
         getFilterBlock(){
             let block = '';
             //console.dir(filter_list.length);
+            block = block + '<label for="plg_filter_table_style" style="font-size: 18px">Формат вывода таблицы</label>';
+            block = block + '<p><input class="plg_filter_table_style" type="radio" value="vertical" '+(table_style == "vertical" ? 'checked' : '')+' name="plg_filter_table_style" style="margin: 0;"> вертикальное    ';
+            block = block + '<input class="plg_filter_table_style" type="radio" value="horizontal" '+(table_style == "horizontal" ? 'checked' : '')+' name="plg_filter_table_style" style="margin: 0;"> горизонтальное</p>';
             $.each(filter_list, function (index, filter_item) {
                 //console.dir(filter_item);
                 block = block + '<fieldset class="plg_filter" id="plg_filter_'+index+'" data-index="'+index+'">' +

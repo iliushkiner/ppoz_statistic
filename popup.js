@@ -274,15 +274,59 @@ function load_inf_statistic(request) {
 	statistic_html_block += "<div><b>Статусы:</b> " + options_filter.def_status + "</div>";*/
     statistic_html_block += "<div class='stat'>";
     statistic_html_block += "<table class='table table-striped' style='font-size: 12px;'>"
-    statistic_html_block += "<theader><tr><th>Нименование статфильтра</th><!--<th>Параметры фильтра</th>--><th>Количество</th></tr></theader>";
+    let statistic_html_block_row_1 = "";
+    let statistic_html_block_row_2 = "";
+    if(options.table_style == "horizontal"){
+        statistic_html_block += "<theader><tr><th></th>";
+        $.each(options.filter_list, function (key,options_filter) {
+            if (options_filter.enable) {
+                statistic_html_block += "<th>" + options_filter.name + "</th>";
+            }
+        });
+        statistic_html_block += "</tr></theader>";
+        if(options.table_style == "horizontal"){
+            statistic_html_block_row_1 += "<tr class='horisontal_tr'><td>Количество</td>";
+            statistic_html_block_row_2 += "<tr class='horisontal_tr'><td></td>";
+        }
+
+    } else {
+        statistic_html_block += "<theader><tr><th>Нименование статфильтра</th><!--<th>Параметры фильтра</th>--><th>Количество</th></tr></theader>";
+    }
 
     $.each(options.filter_list, function (key,options_filter) {
         if(options_filter.enable) {
             //console.dir(options_filter);
             /*statistic_html_block = "<div><span><b>Регион:</b> " + options_filter.region + "</span>   <span><b>Подразделение:</b> " + options_filter.podrazdelenie + "</span></div>";
 			statistic_html_block += "<div><b>Статусы:</b> " + options_filter.def_status + "</div>";*/
-            statistic_html_block += "<tr id='filter_" + key + "' data-toggle='collapse' data-target='#appealnumbers_filter_" + key + "'><td>" + options_filter.name + "</td><!--<td>" + "Список фильтров по обращению options_filter.getJSON()<br>(*почему то не видит метод getJSON())"/*JSON.stringify(options_filter.getJSON())/*options.filter_list[key].getJSON()*/ + "</td>--><td class='col_count'><img src='loading.gif' alt='loading' class='loading'></td></tr>";
-            statistic_html_block += "<tr id='appealnumbers_filter_" + key + "' class='collapse'><td class='col_count_appealnumbers' colspan='2'><img src='loading.gif' alt='loading' class='loading'></td></tr>";
+
+            if(options.table_style == "vertical") {
+                statistic_html_block_row_1 = "";
+                statistic_html_block_row_2 = "";
+            }
+
+            statistic_html_block_row_1 += (options.table_style == "vertical" ? "<tr" : "<td") + " id='filter_" + key + "' data-toggle='collapse' data-target='#appealnumbers_filter_" + key + "'>";
+
+            if(options.table_style == "vertical") {
+                statistic_html_block_row_1 += "<td>" + options_filter.name + "</td>";
+            }
+
+            //statistic_html_block_row_1 += "<!--<td>" + "Список фильтров по обращению options_filter.getJSON()<br>(*почему то не видит метод getJSON())"/*JSON.stringify(options_filter.getJSON())/*options.filter_list[key].getJSON()*/ + "</td>-->";
+
+            statistic_html_block_row_1 += (options.table_style == "vertical" ? "<td" : "<div") + " class='col_count'>";
+            statistic_html_block_row_1 += "<img src='loading.gif' alt='loading' class='loading'>";
+            statistic_html_block_row_1 += "</" + (options.table_style == "vertical" ? "td" : "div") + ">";
+            statistic_html_block_row_1 += "</" + (options.table_style == "vertical" ? "tr" : "td") + ">";
+
+            statistic_html_block_row_2 += (options.table_style == "vertical" ? "<tr" : "<td><div ") + " id='appealnumbers_filter_" + key + "' class='collapse'>";
+            statistic_html_block_row_2 += (options.table_style == "vertical" ? "<td" : "<div") + " class='col_count_appealnumbers' " + (options.table_style == "vertical" ? "colspan='2'" : "") + ">";
+            statistic_html_block_row_2 += "<img src='loading.gif' alt='loading' class='loading'>";
+            statistic_html_block_row_2 += "</" + (options.table_style == "vertical" ? "td" : "div") + ">";
+            statistic_html_block_row_2 += (options.table_style == "vertical" ? "</tr" : "</div></td") + ">";
+
+            if(options.table_style == "vertical") {
+                statistic_html_block += statistic_html_block_row_1 + statistic_html_block_row_2;
+            }
+
             let requrl = "http://ppoz-service-bal-01.prod.egrn:9001/manager/requests";
             //{"pageNumber":0,"pageSize":1000,"statuses":["reg_validations"],"subjectRF":["12"],"executorDepartments":["12.146"],"executors":["ibkolesnikova"],"byActiveExecutor":true}
 
@@ -348,6 +392,9 @@ function load_inf_statistic(request) {
             //options_filter
         }
     });
+    if(options.table_style == "horizontal") {
+        statistic_html_block += statistic_html_block_row_1 + statistic_html_block_row_2;
+    }
     statistic_html_block += "</table></div></div>";
     statistic_html_block = statistic.html() + statistic_html_block;
     statistic.html(statistic_html_block);
