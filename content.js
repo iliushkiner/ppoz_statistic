@@ -1,7 +1,7 @@
 //$(document).ready(function(){
 
 setInterval(function () {
-    if (document.webkitVisibilityState === 'visible') {
+    if (document.webkitVisibilityState === 'visible' && document.URL === "http://ppoz-service-bal-01.prod.egrn:9001/#/administration") {
         //console.log(curentpodr);
 
         //console.log(podrazc);
@@ -95,6 +95,18 @@ setInterval(function () {
             requestTypes = (requestTypes != "" ? requestTypes.split(',') : []);
         }
 
+        let senderTypes = [];
+        let senderTypesFBlock = $("div.filter-label:contains('Тип ИС (источник):')").parent();
+        let senderTypesBlock = senderTypesFBlock.find("input.main-input");
+        if (senderTypesBlock.length>0) {
+            senderTypes = $(senderTypesBlock)["0"].defaultValue;
+            senderTypes = (senderTypes != "" ? senderTypes.split(',') : []);
+        }
+
+        let byActiveExecutor = true;
+        let byActiveExecutorBlockHtml = $(".tab-switch.active").html();
+        byActiveExecutor = (byActiveExecutorBlockHtml ===  "Поиск по текущему исполнителю" ? true : false);
+
         //if(podrazc.length>0){
         //console.log(podrazc);
         chrome.runtime.sendMessage(
@@ -107,7 +119,9 @@ setInterval(function () {
                 executorDepartments: executorDepartments,
                 statuses: statuses,
                 executors: executors,
-                requestTypes: requestTypes
+                requestTypes: requestTypes,
+                senderTypes: senderTypes,
+                byActiveExecutor: byActiveExecutor
             });
         //}
         //console.log("Регион: "+regionc+"  Подразделение: "+podrazc);

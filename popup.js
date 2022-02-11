@@ -171,7 +171,7 @@ function check_filter(index, value, reqbyiditem, like){
                     /**
                      * Ищем вхождение подстроки likeval в reqbyiditem[index]
                      */
-                    if(reqbyiditem[index] !== ""){
+                    if(typeof (reqbyiditem[index]) !== "undefined" && reqbyiditem[index] !== "" && reqbyiditem[index] !== null){
                         let patern = new RegExp(likeval,'g');
                         let match = reqbyiditem[index].match(patern);
                         result = (typeof(match) != "undefined" &&  match != null && match.length>0);
@@ -341,7 +341,8 @@ function load_inf_statistic(request) {
                 executorDepartments: (Array.isArray(request.executorDepartments) && request.executorDepartments.length > 0 ? request.executorDepartments : (options_filter.podrazdelenie != "" ? options_filter.podrazdelenie.split(',') : [])),
                 executors: (Array.isArray(request.executors) && request.executors.length > 0 ? request.executors : (options_filter.regs_enable && options_filter.def_regs != "" ? options_filter.def_regs.split(',') : [])),
                 requestTypes: (Array.isArray(request.requestTypes) && request.requestTypes.length > 0 ? request.requestTypes : (options_filter.requestTypes && options_filter.requestTypes != "" ? options_filter.requestTypes.split(',') : [])),
-                byActiveExecutor: true
+                senderTypes: (Array.isArray(request.senderTypes) && request.senderTypes.length > 0 ? request.senderTypes : []),
+                byActiveExecutor: request.byActiveExecutor
             };
 
             $.each(json, function (json_key, json_element) {
